@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Photo Portfolio</title>
+<style>
+  body {
+    font-family: sans-serif;
+    margin: 0;
+    background: #fff;
+    color: #222;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+    z-index: 10;
+  }
+  header input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 4px;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .gallery-item {
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: #fafafa;
+    transition: transform 0.3s ease;
+  }
+  .gallery-item:hover {
+    transform: scale(1.02);
+  }
+  .gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .caption {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  /* Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+  }
+  .lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <input type="text" id="search" placeholder="Search images..." />
+</header>
+
+<main>
+  <div class="gallery" id="gallery"></div>
+</main>
+
+<div class="lightbox" id="lightbox">
+  <img src="" alt="Expanded view" />
+</div>
+
+<script>
+  const images = [
+    { src: "https://source.unsplash.com/random/800x1000?sig=1", title: "Sunset in Iceland" },
+    { src: "https://source.unsplash.com/random/800x1000?sig=2", title: "Urban Shadows" },
+    { src: "https://source.unsplash.com/random/800x1000?sig=3", title: "Golden Desert" },
+    { src: "https://source.unsplash.com/random/800x1000?sig=4", title: "Rainy Street" },
+    { src: "https://source.unsplash.com/random/800x1000?sig=5", title: "Morning Light" },
+    { src: "https://source.unsplash.com/random/800x1000?sig=6", title: "Forest Mist" }
+  ];
+
+  const gallery = document.getElementById('gallery');
+  const searchInput = document.getElementById('search');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = lightbox.querySelector('img');
+
+  function renderGallery(filter = "") {
+    gallery.innerHTML = "";
+    images
+      .filter(img => img.title.toLowerCase().includes(filter.toLowerCase()))
+      .forEach(img => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `
+          <img loading="lazy" src="${img.src}" alt="${img.title}" />
+          <div class="caption">${img.title}</div>
+        `;
+        item.addEventListener('click', () => {
+          lightboxImg.src = img.src;
+          lightbox.style.display = 'flex';
+        });
+        gallery.appendChild(item);
+      });
+  }
+
+  searchInput.addEventListener('input', e => {
+    renderGallery(e.target.value);
+  });
+
+  lightbox.addEventListener('click', () => {
+    lightbox.style.display = 'none';
+    lightboxImg.src = "";
+  });
+
+  renderGallery();
+</script>
+
+</body>
+</html>
